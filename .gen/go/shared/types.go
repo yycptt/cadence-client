@@ -9176,7 +9176,8 @@ func (v *DescribeTaskListRequest) GetTaskListType() (o TaskListType) {
 }
 
 type DescribeTaskListResponse struct {
-	Pollers []*PollerInfo `json:"pollers,omitempty"`
+	Pollers          []*PollerInfo `json:"pollers,omitempty"`
+	BacklogCountHint *int64        `json:"backlogCountHint,omitempty"`
 }
 
 type _List_PollerInfo_ValueList []*PollerInfo
@@ -9225,7 +9226,7 @@ func (_List_PollerInfo_ValueList) Close() {}
 //   }
 func (v *DescribeTaskListResponse) ToWire() (wire.Value, error) {
 	var (
-		fields [1]wire.Field
+		fields [2]wire.Field
 		i      int = 0
 		w      wire.Value
 		err    error
@@ -9237,6 +9238,14 @@ func (v *DescribeTaskListResponse) ToWire() (wire.Value, error) {
 			return w, err
 		}
 		fields[i] = wire.Field{ID: 10, Value: w}
+		i++
+	}
+	if v.BacklogCountHint != nil {
+		w, err = wire.NewValueI64(*(v.BacklogCountHint)), error(nil)
+		if err != nil {
+			return w, err
+		}
+		fields[i] = wire.Field{ID: 20, Value: w}
 		i++
 	}
 
@@ -9297,6 +9306,16 @@ func (v *DescribeTaskListResponse) FromWire(w wire.Value) error {
 				}
 
 			}
+		case 20:
+			if field.Value.Type() == wire.TI64 {
+				var x int64
+				x, err = field.Value.GetI64(), error(nil)
+				v.BacklogCountHint = &x
+				if err != nil {
+					return err
+				}
+
+			}
 		}
 	}
 
@@ -9310,10 +9329,14 @@ func (v *DescribeTaskListResponse) String() string {
 		return "<nil>"
 	}
 
-	var fields [1]string
+	var fields [2]string
 	i := 0
 	if v.Pollers != nil {
 		fields[i] = fmt.Sprintf("Pollers: %v", v.Pollers)
+		i++
+	}
+	if v.BacklogCountHint != nil {
+		fields[i] = fmt.Sprintf("BacklogCountHint: %v", *(v.BacklogCountHint))
 		i++
 	}
 
@@ -9343,8 +9366,21 @@ func (v *DescribeTaskListResponse) Equals(rhs *DescribeTaskListResponse) bool {
 	if !((v.Pollers == nil && rhs.Pollers == nil) || (v.Pollers != nil && rhs.Pollers != nil && _List_PollerInfo_Equals(v.Pollers, rhs.Pollers))) {
 		return false
 	}
+	if !_I64_EqualsPtr(v.BacklogCountHint, rhs.BacklogCountHint) {
+		return false
+	}
 
 	return true
+}
+
+// GetBacklogCountHint returns the value of BacklogCountHint if it is set or its
+// zero value if it is unset.
+func (v *DescribeTaskListResponse) GetBacklogCountHint() (o int64) {
+	if v.BacklogCountHint != nil {
+		return *v.BacklogCountHint
+	}
+
+	return
 }
 
 type DescribeWorkflowExecutionRequest struct {

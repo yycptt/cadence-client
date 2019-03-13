@@ -233,7 +233,7 @@ type (
 		DescribeWorkflowExecution(ctx context.Context, workflowID, runID string) (*s.DescribeWorkflowExecutionResponse, error)
 
 		// DescribeTaskList returns information about the target tasklist, right now this API returns the
-		// pollers which polled this tasklist in last few minutes.
+		// pollers which polled this tasklist in last few minutes and the backlogCount for this tasklist.
 		// The errors it can return:
 		//  - BadRequestError
 		//  - InternalServiceError

@@ -645,7 +645,7 @@ func (wc *workflowClient) QueryWorkflow(ctx context.Context, workflowID string, 
 }
 
 // DescribeTaskList returns information about the target tasklist, right now this API returns the
-// pollers which polled this tasklist in last few minutes.
+// pollers which polled this tasklist in last few minutes and the backlogCount for this tasklist.
 // - tasklist name of tasklist
 // - tasklistType type of tasklist, can be decision or activity
 // The errors it can return:

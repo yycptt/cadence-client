@@ -1234,6 +1234,7 @@ struct DescribeTaskListRequest {
 
 struct DescribeTaskListResponse {
   10: optional list<PollerInfo> pollers
+  20: optional i64 (js.type = "Long") backlogCountHint
 }
 
 //At least one of the parameters needs to be provided
