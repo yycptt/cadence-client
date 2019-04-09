@@ -12028,6 +12028,158 @@ func (v *EventType) UnmarshalJSON(text []byte) error {
 	}
 }
 
+type ExecutionTimeFilter struct {
+	EarliestTime *int64 `json:"earliestTime,omitempty"`
+	LatestTime   *int64 `json:"latestTime,omitempty"`
+}
+
+// ToWire translates a ExecutionTimeFilter struct into a Thrift-level intermediate
+// representation. This intermediate representation may be serialized
+// into bytes using a ThriftRW protocol implementation.
+//
+// An error is returned if the struct or any of its fields failed to
+// validate.
+//
+//   x, err := v.ToWire()
+//   if err != nil {
+//     return err
+//   }
+//
+//   if err := binaryProtocol.Encode(x, writer); err != nil {
+//     return err
+//   }
+func (v *ExecutionTimeFilter) ToWire() (wire.Value, error) {
+	var (
+		fields [2]wire.Field
+		i      int = 0
+		w      wire.Value
+		err    error
+	)
+
+	if v.EarliestTime != nil {
+		w, err = wire.NewValueI64(*(v.EarliestTime)), error(nil)
+		if err != nil {
+			return w, err
+		}
+		fields[i] = wire.Field{ID: 10, Value: w}
+		i++
+	}
+	if v.LatestTime != nil {
+		w, err = wire.NewValueI64(*(v.LatestTime)), error(nil)
+		if err != nil {
+			return w, err
+		}
+		fields[i] = wire.Field{ID: 20, Value: w}
+		i++
+	}
+
+	return wire.NewValueStruct(wire.Struct{Fields: fields[:i]}), nil
+}
+
+// FromWire deserializes a ExecutionTimeFilter struct from its Thrift-level
+// representation. The Thrift-level representation may be obtained
+// from a ThriftRW protocol implementation.
+//
+// An error is returned if we were unable to build a ExecutionTimeFilter struct
+// from the provided intermediate representation.
+//
+//   x, err := binaryProtocol.Decode(reader, wire.TStruct)
+//   if err != nil {
+//     return nil, err
+//   }
+//
+//   var v ExecutionTimeFilter
+//   if err := v.FromWire(x); err != nil {
+//     return nil, err
+//   }
+//   return &v, nil
+func (v *ExecutionTimeFilter) FromWire(w wire.Value) error {
+	var err error
+
+	for _, field := range w.GetStruct().Fields {
+		switch field.ID {
+		case 10:
+			if field.Value.Type() == wire.TI64 {
+				var x int64
+				x, err = field.Value.GetI64(), error(nil)
+				v.EarliestTime = &x
+				if err != nil {
+					return err
+				}
+
+			}
+		case 20:
+			if field.Value.Type() == wire.TI64 {
+				var x int64
+				x, err = field.Value.GetI64(), error(nil)
+				v.LatestTime = &x
+				if err != nil {
+					return err
+				}
+
+			}
+		}
+	}
+
+	return nil
+}
+
+// String returns a readable string representation of a ExecutionTimeFilter
+// struct.
+func (v *ExecutionTimeFilter) String() string {
+	if v == nil {
+		return "<nil>"
+	}
+
+	var fields [2]string
+	i := 0
+	if v.EarliestTime != nil {
+		fields[i] = fmt.Sprintf("EarliestTime: %v", *(v.EarliestTime))
+		i++
+	}
+	if v.LatestTime != nil {
+		fields[i] = fmt.Sprintf("LatestTime: %v", *(v.LatestTime))
+		i++
+	}
+
+	return fmt.Sprintf("ExecutionTimeFilter{%v}", strings.Join(fields[:i], ", "))
+}
+
+// Equals returns true if all the fields of this ExecutionTimeFilter match the
+// provided ExecutionTimeFilter.
+//
+// This function performs a deep comparison.
+func (v *ExecutionTimeFilter) Equals(rhs *ExecutionTimeFilter) bool {
+	if !_I64_EqualsPtr(v.EarliestTime, rhs.EarliestTime) {
+		return false
+	}
+	if !_I64_EqualsPtr(v.LatestTime, rhs.LatestTime) {
+		return false
+	}
+
+	return true
+}
+
+// GetEarliestTime returns the value of EarliestTime if it is set or its
+// zero value if it is unset.
+func (v *ExecutionTimeFilter) GetEarliestTime() (o int64) {
+	if v.EarliestTime != nil {
+		return *v.EarliestTime
+	}
+
+	return
+}
+
+// GetLatestTime returns the value of LatestTime if it is set or its
+// zero value if it is unset.
+func (v *ExecutionTimeFilter) GetLatestTime() (o int64) {
+	if v.LatestTime != nil {
+		return *v.LatestTime
+	}
+
+	return
+}
+
 type ExternalWorkflowExecutionCancelRequestedEventAttributes struct {
 	InitiatedEventId  *int64             `json:"initiatedEventId,omitempty"`
 	Domain            *string            `json:"domain,omitempty"`
@@ -15655,13 +15807,14 @@ func (v *LimitExceededError) Error() string {
 }
 
 type ListClosedWorkflowExecutionsRequest struct {
-	Domain          *string                       `json:"domain,omitempty"`
-	MaximumPageSize *int32                        `json:"maximumPageSize,omitempty"`
-	NextPageToken   []byte                        `json:"nextPageToken,omitempty"`
-	StartTimeFilter *StartTimeFilter              `json:"StartTimeFilter,omitempty"`
-	ExecutionFilter *WorkflowExecutionFilter      `json:"executionFilter,omitempty"`
-	TypeFilter      *WorkflowTypeFilter           `json:"typeFilter,omitempty"`
-	StatusFilter    *WorkflowExecutionCloseStatus `json:"statusFilter,omitempty"`
+	Domain              *string                       `json:"domain,omitempty"`
+	MaximumPageSize     *int32                        `json:"maximumPageSize,omitempty"`
+	NextPageToken       []byte                        `json:"nextPageToken,omitempty"`
+	StartTimeFilter     *StartTimeFilter              `json:"StartTimeFilter,omitempty"`
+	ExecutionFilter     *WorkflowExecutionFilter      `json:"executionFilter,omitempty"`
+	TypeFilter          *WorkflowTypeFilter           `json:"typeFilter,omitempty"`
+	StatusFilter        *WorkflowExecutionCloseStatus `json:"statusFilter,omitempty"`
+	ExecutionTimeFilter *ExecutionTimeFilter          `json:"executionTimeFilter,omitempty"`
 }
 
 // ToWire translates a ListClosedWorkflowExecutionsRequest struct into a Thrift-level intermediate
@@ -15681,7 +15834,7 @@ type ListClosedWorkflowExecutionsRequest struct {
 //   }
 func (v *ListClosedWorkflowExecutionsRequest) ToWire() (wire.Value, error) {
 	var (
-		fields [7]wire.Field
+		fields [8]wire.Field
 		i      int = 0
 		w      wire.Value
 		err    error
@@ -15743,6 +15896,14 @@ func (v *ListClosedWorkflowExecutionsRequest) ToWire() (wire.Value, error) {
 		fields[i] = wire.Field{ID: 70, Value: w}
 		i++
 	}
+	if v.ExecutionTimeFilter != nil {
+		w, err = v.ExecutionTimeFilter.ToWire()
+		if err != nil {
+			return w, err
+		}
+		fields[i] = wire.Field{ID: 80, Value: w}
+		i++
+	}
 
 	return wire.NewValueStruct(wire.Struct{Fields: fields[:i]}), nil
 }
@@ -15769,6 +15930,12 @@ func _WorkflowExecutionCloseStatus_Read(w wire.Value) (WorkflowExecutionCloseSta
 	var v WorkflowExecutionCloseStatus
 	err := v.FromWire(w)
 	return v, err
+}
+
+func _ExecutionTimeFilter_Read(w wire.Value) (*ExecutionTimeFilter, error) {
+	var v ExecutionTimeFilter
+	err := v.FromWire(w)
+	return &v, err
 }
 
 // FromWire deserializes a ListClosedWorkflowExecutionsRequest struct from its Thrift-level
@@ -15855,6 +16022,14 @@ func (v *ListClosedWorkflowExecutionsRequest) FromWire(w wire.Value) error {
 				}
 
 			}
+		case 80:
+			if field.Value.Type() == wire.TStruct {
+				v.ExecutionTimeFilter, err = _ExecutionTimeFilter_Read(field.Value)
+				if err != nil {
+					return err
+				}
+
+			}
 		}
 	}
 
@@ -15868,7 +16043,7 @@ func (v *ListClosedWorkflowExecutionsRequest) String() string {
 		return "<nil>"
 	}
 
-	var fields [7]string
+	var fields [8]string
 	i := 0
 	if v.Domain != nil {
 		fields[i] = fmt.Sprintf("Domain: %v", *(v.Domain))
@@ -15896,6 +16071,10 @@ func (v *ListClosedWorkflowExecutionsRequest) String() string {
 	}
 	if v.StatusFilter != nil {
 		fields[i] = fmt.Sprintf("StatusFilter: %v", *(v.StatusFilter))
+		i++
+	}
+	if v.ExecutionTimeFilter != nil {
+		fields[i] = fmt.Sprintf("ExecutionTimeFilter: %v", v.ExecutionTimeFilter)
 		i++
 	}
 
@@ -15936,6 +16115,9 @@ func (v *ListClosedWorkflowExecutionsRequest) Equals(rhs *ListClosedWorkflowExec
 		return false
 	}
 	if !_WorkflowExecutionCloseStatus_EqualsPtr(v.StatusFilter, rhs.StatusFilter) {
+		return false
+	}
+	if !((v.ExecutionTimeFilter == nil && rhs.ExecutionTimeFilter == nil) || (v.ExecutionTimeFilter != nil && rhs.ExecutionTimeFilter != nil && v.ExecutionTimeFilter.Equals(rhs.ExecutionTimeFilter))) {
 		return false
 	}
 
@@ -16499,12 +16681,13 @@ func (v *ListDomainsResponse) Equals(rhs *ListDomainsResponse) bool {
 }
 
 type ListOpenWorkflowExecutionsRequest struct {
-	Domain          *string                  `json:"domain,omitempty"`
-	MaximumPageSize *int32                   `json:"maximumPageSize,omitempty"`
-	NextPageToken   []byte                   `json:"nextPageToken,omitempty"`
-	StartTimeFilter *StartTimeFilter         `json:"StartTimeFilter,omitempty"`
-	ExecutionFilter *WorkflowExecutionFilter `json:"executionFilter,omitempty"`
-	TypeFilter      *WorkflowTypeFilter      `json:"typeFilter,omitempty"`
+	Domain              *string                  `json:"domain,omitempty"`
+	MaximumPageSize     *int32                   `json:"maximumPageSize,omitempty"`
+	NextPageToken       []byte                   `json:"nextPageToken,omitempty"`
+	StartTimeFilter     *StartTimeFilter         `json:"StartTimeFilter,omitempty"`
+	ExecutionFilter     *WorkflowExecutionFilter `json:"executionFilter,omitempty"`
+	TypeFilter          *WorkflowTypeFilter      `json:"typeFilter,omitempty"`
+	ExecutionTimeFilter *ExecutionTimeFilter     `json:"executionTimeFilter,omitempty"`
 }
 
 // ToWire translates a ListOpenWorkflowExecutionsRequest struct into a Thrift-level intermediate
@@ -16524,7 +16707,7 @@ type ListOpenWorkflowExecutionsRequest struct {
 //   }
 func (v *ListOpenWorkflowExecutionsRequest) ToWire() (wire.Value, error) {
 	var (
-		fields [6]wire.Field
+		fields [7]wire.Field
 		i      int = 0
 		w      wire.Value
 		err    error
@@ -16576,6 +16759,14 @@ func (v *ListOpenWorkflowExecutionsRequest) ToWire() (wire.Value, error) {
 			return w, err
 		}
 		fields[i] = wire.Field{ID: 60, Value: w}
+		i++
+	}
+	if v.ExecutionTimeFilter != nil {
+		w, err = v.ExecutionTimeFilter.ToWire()
+		if err != nil {
+			return w, err
+		}
+		fields[i] = wire.Field{ID: 70, Value: w}
 		i++
 	}
 
@@ -16656,6 +16847,14 @@ func (v *ListOpenWorkflowExecutionsRequest) FromWire(w wire.Value) error {
 				}
 
 			}
+		case 70:
+			if field.Value.Type() == wire.TStruct {
+				v.ExecutionTimeFilter, err = _ExecutionTimeFilter_Read(field.Value)
+				if err != nil {
+					return err
+				}
+
+			}
 		}
 	}
 
@@ -16669,7 +16868,7 @@ func (v *ListOpenWorkflowExecutionsRequest) String() string {
 		return "<nil>"
 	}
 
-	var fields [6]string
+	var fields [7]string
 	i := 0
 	if v.Domain != nil {
 		fields[i] = fmt.Sprintf("Domain: %v", *(v.Domain))
@@ -16693,6 +16892,10 @@ func (v *ListOpenWorkflowExecutionsRequest) String() string {
 	}
 	if v.TypeFilter != nil {
 		fields[i] = fmt.Sprintf("TypeFilter: %v", v.TypeFilter)
+		i++
+	}
+	if v.ExecutionTimeFilter != nil {
+		fields[i] = fmt.Sprintf("ExecutionTimeFilter: %v", v.ExecutionTimeFilter)
 		i++
 	}
 
@@ -16720,6 +16923,9 @@ func (v *ListOpenWorkflowExecutionsRequest) Equals(rhs *ListOpenWorkflowExecutio
 		return false
 	}
 	if !((v.TypeFilter == nil && rhs.TypeFilter == nil) || (v.TypeFilter != nil && rhs.TypeFilter != nil && v.TypeFilter.Equals(rhs.TypeFilter))) {
+		return false
+	}
+	if !((v.ExecutionTimeFilter == nil && rhs.ExecutionTimeFilter == nil) || (v.ExecutionTimeFilter != nil && rhs.ExecutionTimeFilter != nil && v.ExecutionTimeFilter.Equals(rhs.ExecutionTimeFilter))) {
 		return false
 	}
 

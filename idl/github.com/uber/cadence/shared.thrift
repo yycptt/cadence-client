@@ -828,6 +828,11 @@ struct StartTimeFilter {
   20: optional i64 (js.type = "Long") latestTime
 }
 
+struct ExecutionTimeFilter {
+  10: optional i64 (js.type = "Long") earliestTime
+  20: optional i64 (js.type = "Long") latestTime
+}
+
 struct DomainInfo {
   10: optional string name
   20: optional DomainStatus status
@@ -1157,6 +1162,7 @@ struct ListOpenWorkflowExecutionsRequest {
   40: optional StartTimeFilter StartTimeFilter
   50: optional WorkflowExecutionFilter executionFilter
   60: optional WorkflowTypeFilter typeFilter
+  70: optional ExecutionTimeFilter executionTimeFilter
 }
 
 struct ListOpenWorkflowExecutionsResponse {
@@ -1172,6 +1178,7 @@ struct ListClosedWorkflowExecutionsRequest {
   50: optional WorkflowExecutionFilter executionFilter
   60: optional WorkflowTypeFilter typeFilter
   70: optional WorkflowExecutionCloseStatus statusFilter
+  80: optional ExecutionTimeFilter executionTimeFilter
 }
 
 struct ListClosedWorkflowExecutionsResponse {
