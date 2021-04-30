@@ -893,10 +893,10 @@ ProcessEvents:
 			}
 		}
 		isReplay := len(reorderedEvents) > 0 && reorderedHistory.IsReplayEvent(reorderedEvents[len(reorderedEvents)-1])
-		lastDecisionEventsForReplayTest := isReplayTest && !reorderedHistory.HasNextDecisionEvents()
-		if isReplay && !lastDecisionEventsForReplayTest {
+		if isReplay {
 			eventDecisions := eventHandler.decisionsHelper.getDecisions(true)
-			if len(eventDecisions) > 0 && !skipReplayCheck {
+			lastDecisionEventsForReplayTest := isReplayTest && !reorderedHistory.HasNextDecisionEvents()
+			if len(eventDecisions) > 0 && !skipReplayCheck && !lastDecisionEventsForReplayTest {
 				replayDecisions = append(replayDecisions, eventDecisions...)
 			}
 		}
